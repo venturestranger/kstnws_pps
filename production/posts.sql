@@ -6,5 +6,7 @@ create table posts (
 	picture_url VARCHAR(300) NOT NULL,
 	content VARCHAR(100000) NOT NULL,
 	date_publication TIMESTAMP NOT NULL,
-	date_edit TIMESTAMP NOT NULL
+	date_edit TIMESTAMP NOT NULL,
+	category VARCHAR(50) NOT NULL,
+	hashtags VARCHAR(1000) NOT NULL
 );

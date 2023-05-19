@@ -6,16 +6,9 @@ import (
 	"strings"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	"net/http"
 )
-
-func CORS(c *gin.Context) {
-	if c.Request.Method == "OPTIONS" {
-		SendStatus(http.StatusOK, c)
-	} else {
-		c.Next()
-	}
-}
 
 func ISAUTH(c *gin.Context) {
 	data := c.GetHeader("Authorization")
@@ -28,7 +21,7 @@ func ISAUTH(c *gin.Context) {
 			}
 			return secretKey, nil
 		})
-		
+
 		claims := token.Claims.(jwt.MapClaims)
 		if err != nil || !token.Valid || claims["iss"] != issuer {
 			SendStatus(http.StatusUnauthorized, c)
@@ -37,13 +30,13 @@ func ISAUTH(c *gin.Context) {
 		}
 	} else {
 		SendStatus(http.StatusBadRequest, c)
-	} 
+	}
 }
 
 func AuthHandler(c *gin.Context) {
 	if c.Query("key") == ppsKey {
 		claims := jwt.MapClaims{
-			"iss": issuer, 
+			"iss": issuer,
 			"iat": time.Now().Unix(),
 			"exp": time.Now().Add(time.Hour * 1),
 		}
@@ -59,13 +52,19 @@ func AuthHandler(c *gin.Context) {
 func main() {
 	r := gin.Default()
 
-	r.Use(CORS)
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"}
+	config.AllowMethods = []string{"*"}
+	config.AllowHeaders = []string{"*"}
+	config.MaxAge = time.Hour * 24
+	r.Use(cors.New(config))
 	r.Use(ISAUTH)
 
 	r.GET("/validate/auth", AuthHandler)
 	r.GET("/validate", GetHandler) // gets a list of posts
 	r.PUT("/validate", PushHandler)  // verifies a post and pushes the post to the api
 	r.POST("/validate", PostHandler) // creates a post on the pull server
-	
-	r.Run(":4000")
+	r.DELETE("/validate", DeleteHandler) // deletes a post on the pull server
+
+	r.Run(":7000")
 }
