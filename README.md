@@ -37,7 +37,7 @@ Status Codes:
 * /validate [GET] | returns posts from PPS 
 * /validate [POST] | creates a post on PPS
 * /validate [PUT] | pushes a post from PPS to API
-* /validate [DELETE] | deletes a post from PPS
+* /validate [DELETE] | removes a post from PPS
 ```
 
 *- endpoints requiring authorization
@@ -51,4 +51,60 @@ Status Codes:
 
 ###### Resources:
 
+```
+/validate [GET]
 
+Description:
+1. It returns a list of posts sorted by publication date (the order is set by order_way_)
+
+* fields: 
+1. id
+2. id_author
+3. order_way_
+4. offset_ - specifies how many posts to skip
+5. limit_ - specifies how many posts to return 
+```
+
+```
+/validate [POST]
+
+Description:
+1. It creates a post on PPS
+2. It requires request body (JSON) with the post data specified
+
+* fields (JSON in request body):
+{
+    "id_author": 1,
+    "title": "Sport title",
+    "lead": "",
+    "picture_url": "",
+    "content": "Hello here is some text",
+    "date_publication": "1971-01-26",
+    "date_edit": "1971-01-26",
+    "category": "спорт",
+    "hashtags": "kostanay sportinkazakhstan"
+    "comment": ""
+}
+```
+
+```
+/validate [PUT]
+
+Description:
+1. It changes the status of a post. If verification is successful, it pushes a post to API and removes the local copy from PPS
+
+* fields: 
+1. id 
+2. comment - this is the text that is displayed if a post has not been verified. It implements a notification systems and tells what is currently wrong with the post
+3. pass - if it is passed with 'true', then the post is successfully verified, pushed to API, and removed from PPS
+```
+
+```
+/validate [DELETE]
+
+Description:
+1. It removes a post copy from PPS by id
+
+* fields: 
+1. id 
+```
