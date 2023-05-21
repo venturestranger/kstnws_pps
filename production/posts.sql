@@ -8,5 +8,6 @@ create table posts (
 	date_publication TIMESTAMP NOT NULL,
 	date_edit TIMESTAMP NOT NULL,
 	category VARCHAR(50) NOT NULL,
-	hashtags VARCHAR(1000) NOT NULL
+	hashtags VARCHAR(1000) NOT NULL,
+	comment VARCHAR(10000) NOT NULL
 );

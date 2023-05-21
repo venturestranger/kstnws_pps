@@ -8,7 +8,7 @@ import (
 
 var httpClient http.Client = http.Client{}
 
-func Logd(data ...any) {
+func Log(data ...any) {
 	log.Println("|", data)
 }
 

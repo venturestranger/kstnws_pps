@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"bytes"
 	"io/ioutil"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -23,6 +22,7 @@ type Post struct {
 	DateEdit			string	`json:"date_edit" db:"date_edit"`
 	Category			string	`json:"category" db:"category"`
 	Hashtags			string	`json:"hashtags" db:"hashtags"`
+	Comment				string	`json:"comment" db:"comment"`
 }
 
 // gets posts from the Pull-Server
@@ -39,12 +39,34 @@ func GetHandler(c *gin.Context) {
 		}
 		defer db.Close()
 
-		offset := c.Query("offset_")
-		limit := c.Query("limit_")
-		order_way := c.Query("order_way_")
+		statement := "select * from posts "
+
+		if c.Query("id") != "" || c.Query("id_author") != "" {
+			statement += " where "
+			andFlag := false
+			if c.Query("id") != "" {
+				statement += " id = " + c.Query("id")
+				andFlag = true
+			}
+			if c.Query("id_author") != "" {
+				if andFlag {
+					statement += " and "
+				}
+				statement += " id_author = " + c.Query("id_author")
+			}
+		}
+		if c.Query("order_way_") != "" {
+			statement += " order by date_publication " + c.Query("order_way_")
+		}
+		if c.Query("offset_") != "" {
+			statement += " offset " + c.Query("offset_")
+		}
+		if c.Query("limit_") != "" {
+			statement += " limit " + c.Query("limit_")
+		}
 
 		var posts []Post
-		db.Select(&posts, fmt.Sprintf("select * from posts order by date_publication %s offset %s limit %s", order_way, offset, limit))
+		db.Select(&posts, statement)
 
 		SendData(posts, c)
 		ch <- true
@@ -67,7 +89,7 @@ func DeleteHandler(c *gin.Context) {
 		defer db.Close()
 
 		id := c.Query("id")
-		err = db.Exec(fmt.Sprintf("delete from posts where id = %s", id))
+		_, err = db.Exec(fmt.Sprintf("delete from posts where id = %s", id))
 
 		if err != nil {
 			log.Println(err)
@@ -96,23 +118,19 @@ func PushHandler(c *gin.Context) {
 		}
 
 		id := c.Query("id")
+		comment := c.Query("comment")
+		pass := c.Query("pass")
 
-		var post Post
-		db.Get(&post, fmt.Sprintf("select * from posts where id = %s", id))
-		payload, _ := json.Marshal(post)
-
-		req, _ := http.NewRequest("POST", apiAddr + "/rest/posts", bytes.NewReader(payload))
-		req.Header.Set("Authorization", "Bearer " + apiToken)
-		resp, err := httpClient.Do(req)
-
-		if err != nil {
-			log.Println(err)
-			SendStatus(http.StatusInternalServerError, c)
-			ch <- true
-			return
+		if pass == "true" {
+			var post Post
+			db.Get(&post, fmt.Sprintf("select * from posts where id = %s", id))
+			PostPushToAPI(post)
+			db.Exec(fmt.Sprintf("delete from posts where id = %s", id))
+		} else {
+			db.Exec(fmt.Sprintf("update posts set comment = '%s' where id = %s", comment, id))
 		}
 
-		SendStatus(resp.StatusCode, c)
+		SendStatus(http.StatusOK, c)
 		ch <- true
 	}()
 	<- ch
@@ -135,7 +153,7 @@ func PostHandler(c *gin.Context) {
 		var post Post
 		payload, _ := ioutil.ReadAll(c.Request.Body)
 		json.Unmarshal(payload, &post)
-		_, err = db.NamedExec("insert into posts(id_author, title, lead, picture_url, content, date_publication, date_edit, category, hashtags) values(:id_author, :title, :lead, :picture_url, :content, :date_publication, :date_edit, :category, :hashtags)", post)
+		_, err = db.NamedExec("insert into posts(id_author, title, lead, picture_url, content, date_publication, date_edit, category, hashtags, comment) values(:id_author, :title, :lead, :picture_url, :content, :date_publication, :date_edit, :category, :hashtags, :comment)", post)
 
 		if err != nil {
 			log.Println(err)
