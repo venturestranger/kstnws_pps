@@ -1,10 +1,10 @@
-## Post Pull Server Documentation
+## Posts Pool Server Documentation
 
 ###### REST Application Conventions and TLDR:
 
 ```
 Abbreviations:
-1. PPS - Posts Pull Server
+1. PPS - Posts Pool Server
 2. API - Application Programming Interface (internal)
 
 HTTP Request Consists Of:
