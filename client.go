@@ -102,10 +102,8 @@ func PostPushToAPI(post Post) {
 		resp := makeRequest(&client, "GET", apiAddr + "/rest/posts?title=" + post.Title + "&id_author=" + strconv.Itoa(post.IdAuthor), nil)
 
 		bodyByte, _ := ioutil.ReadAll(resp.Body)
-		Log(string(bodyByte))
 		var posts []Post
 		json.Unmarshal(bodyByte, &posts)
-		Log(posts)
 
 		if len(posts) < 1 {
 			payload, _ := json.Marshal(post)

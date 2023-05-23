@@ -57,14 +57,13 @@ func main() {
 	config.AllowMethods = []string{"*"}
 	config.AllowHeaders = []string{"*"}
 	config.MaxAge = time.Hour * 24
-	r.Use(ISAUTH)
 	r.Use(cors.New(config))
 
 	r.GET("/validate/auth", AuthHandler)
-	r.GET("/validate", GetHandler) // gets a list of posts
-	r.PUT("/validate", PushHandler)  // verifies a post and pushes the post to the api
-	r.POST("/validate", PostHandler) // creates a post on the pull server
-	r.DELETE("/validate", DeleteHandler) // deletes a post on the pull server
+	r.GET("/validate", ISAUTH, GetHandler) // gets a list of posts
+	r.PUT("/validate", ISAUTH, PushHandler)  // verifies a post and pushes the post to the api
+	r.POST("/validate", ISAUTH, PostHandler) // creates a post on the pull server
+	r.DELETE("/validate", ISAUTH, DeleteHandler) // deletes a post on the pull server
 
 	r.Run(":7000")
 }
