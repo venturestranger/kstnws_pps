@@ -1,5 +1,5 @@
 [Unit]
-Description=Posts Pull Server Service
+Description=Posts Pool Server Service
 After=network.target
 
 [Service]

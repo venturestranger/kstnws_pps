@@ -14,7 +14,7 @@ func ISAUTH(c *gin.Context) {
 	data := c.GetHeader("Authorization")
 	values := strings.Split(data, " ")
 
-	if values[0] == "Bearer" {
+	if len(values) > 1 {
 		token, err := jwt.Parse(values[1], func (token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("Unexpected Signing Method")
@@ -57,8 +57,8 @@ func main() {
 	config.AllowMethods = []string{"*"}
 	config.AllowHeaders = []string{"*"}
 	config.MaxAge = time.Hour * 24
-	r.Use(cors.New(config))
 	r.Use(ISAUTH)
+	r.Use(cors.New(config))
 
 	r.GET("/validate/auth", AuthHandler)
 	r.GET("/validate", GetHandler) // gets a list of posts
