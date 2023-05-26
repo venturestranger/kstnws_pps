@@ -41,7 +41,7 @@ func GetHandler(c *gin.Context) {
 
 		statement := "select * from posts "
 
-		if c.Query("id") != "" || c.Query("id_author") != "" || c.Query("category") {
+		if c.Query("id") != "" || c.Query("id_author") != "" || c.Query("category") != "" {
 			statement += " where "
 			andFlag := false
 			if c.Query("id") != "" {
@@ -99,7 +99,6 @@ func DeleteHandler(c *gin.Context) {
 		defer db.Close()
 
 		id := c.Query("id")
-		id_author := c.Query("id_author")
 		_, err = db.Exec(fmt.Sprintf("delete from posts where id = %s", id))
 
 		if err != nil {
