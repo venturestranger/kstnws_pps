@@ -61,7 +61,7 @@ func GetHandler(c *gin.Context) {
 					statement += " and "
 				}
 
-				statement += " category = " + c.Query("category")
+				statement += " category = '" + c.Query("category") + "'"
 				andFlag = true
 			}
 		}
