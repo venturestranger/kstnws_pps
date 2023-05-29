@@ -39,20 +39,17 @@ func GetHandler(c *gin.Context) {
 		}
 		defer db.Close()
 
-		statement := "select * from posts "
+		statement := "select * from posts where comment not like '*%' "
 
 		if c.Query("id") != "" || c.Query("id_author") != "" || c.Query("category") != "" {
-			statement += " where comment not like '*%' and "
 			if c.Query("id") != "" {
 				statement += " and id = " + c.Query("id")
 			}
 			if c.Query("id_author") != "" {
 				statement += " and id_author = " + c.Query("id_author")
-				andFlag = true
 			}
 			if c.Query("category") != "" {
 				statement += " and category = '" + c.Query("category") + "' "
-				andFlag = true
 			}
 		}
 		if c.Query("order_way_") != "" {
