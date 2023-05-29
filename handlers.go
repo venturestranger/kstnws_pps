@@ -42,26 +42,16 @@ func GetHandler(c *gin.Context) {
 		statement := "select * from posts "
 
 		if c.Query("id") != "" || c.Query("id_author") != "" || c.Query("category") != "" {
-			statement += " where "
-			andFlag := false
+			statement += " where comment not like '*%' and "
 			if c.Query("id") != "" {
-				statement += " id = " + c.Query("id")
-				andFlag = true
+				statement += " and id = " + c.Query("id")
 			}
 			if c.Query("id_author") != "" {
-				if andFlag {
-					statement += " and "
-				}
-
-				statement += " id_author = " + c.Query("id_author")
+				statement += " and id_author = " + c.Query("id_author")
 				andFlag = true
 			}
 			if c.Query("category") != "" {
-				if andFlag {
-					statement += " and "
-				}
-
-				statement += " category = '" + c.Query("category") + "'"
+				statement += " and category = '" + c.Query("category") + "' "
 				andFlag = true
 			}
 		}
