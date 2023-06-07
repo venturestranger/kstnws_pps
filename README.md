@@ -28,6 +28,7 @@ Status Codes:
 2. 400 Bad Request (wrong query format or non-existent fields)
 3. 401 Unathorized (no access due to invalid token)
 4. 405 Method Not Allowed (no method specified for a resource)
+5. 500 Internal Server Error (server troubles to connect to its databases)
 ```
 
 ###### API Routing:
