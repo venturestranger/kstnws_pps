@@ -31,7 +31,7 @@ Status Codes:
 5. 500 Internal Server Error (server troubles to connect to its databases)
 ```
 
-###### API Routing:
+###### PPS Routing:
 
 ```
 - /validate/auth [GET] | returns a token if valid key 
