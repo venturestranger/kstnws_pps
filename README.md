@@ -27,7 +27,7 @@ Status Codes:
 1. 200 OK (successful request)
 2. 400 Bad Request (wrong query format or non-existent fields)
 3. 401 Unathorized (no access due to invalid token)
-5. 405 Method Not Allowed (no method specified for a resource)
+4. 405 Method Not Allowed (no method specified for a resource)
 ```
 
 ###### API Routing:
