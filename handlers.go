@@ -25,7 +25,7 @@ type Post struct {
 	Comment				string	`json:"comment" db:"comment"`
 }
 
-// gets posts from the Pull-Server
+// gets posts from the Pool Server
 func GetHandler(c *gin.Context) {
 	ch := make(chan bool)
 
@@ -71,7 +71,7 @@ func GetHandler(c *gin.Context) {
 	<- ch
 }
 
-// deletes a post on the Pull-Server
+// deletes a post on the Pool-Server
 func DeleteHandler(c *gin.Context) {
 	ch := make(chan bool)
 
@@ -133,7 +133,7 @@ func PushHandler(c *gin.Context) {
 	<- ch
 }
 
-// creates a new post on the Pull Server
+// creates a new post on the Pool Server
 func PostHandler(c *gin.Context) {
 	ch := make(chan bool)
 
@@ -151,6 +151,40 @@ func PostHandler(c *gin.Context) {
 		payload, _ := ioutil.ReadAll(c.Request.Body)
 		json.Unmarshal(payload, &post)
 		_, err = db.NamedExec("insert into posts(id_author, title, lead, picture_url, content, date_publication, date_edit, category, hashtags, comment) values(:id_author, :title, :lead, :picture_url, :content, :date_publication, :date_edit, :category, :hashtags, :comment)", post)
+
+		if err != nil {
+			log.Println(err)
+			SendStatus(http.StatusBadRequest, c)
+			ch <- true
+			return
+		}
+
+		SendStatus(http.StatusOK, c)
+		ch <- true
+	}()
+	<- ch
+}
+
+
+// updates posts on Pool Server
+func PutHandler(c *gin.Context) {
+	ch := make(chan bool)
+
+	go func() {
+		db, err := sqlx.Open("postgres", dsn)
+		if err != nil {
+			log.Println(err)
+			SendStatus(http.StatusBadRequest, c)
+			ch <- true
+			return
+		}
+		defer db.Close()
+
+		var post Post
+		id := c.Query("id")
+		payload, _ := ioutil.ReadAll(c.Request.Body)
+		json.Unmarshal(payload, &post)
+		_, err = db.NamedExec(fmt.Sprintf("update posts set id_author = :id_author, title = :title, lead = :lead, picture_url = :picture_url, content = :content, date_publication = :date_publication, date_edit = :date_edit, category = :category, hashtags = :hashtags, comment = :comment where id = %s", id), post)
 
 		if err != nil {
 			log.Println(err)

@@ -60,10 +60,11 @@ func main() {
 	r.Use(cors.New(config))
 
 	r.GET("/validate/auth", AuthHandler)
+	r.PUT("/validate/push", ISAUTH, AuthHandler) // validates the post and pushes it to the pool server
 	r.GET("/validate", ISAUTH, GetHandler) // gets a list of posts
-	r.PUT("/validate", ISAUTH, PushHandler)  // verifies a post and pushes the post to the api
-	r.POST("/validate", ISAUTH, PostHandler) // creates a post on the pull server
-	r.DELETE("/validate", ISAUTH, DeleteHandler) // deletes a post on the pull server
+	r.PUT("/validate", ISAUTH, PutHandler)  // updates a post on the pool server
+	r.POST("/validate", ISAUTH, PostHandler) // creates a post on the pool server
+	r.DELETE("/validate", ISAUTH, DeleteHandler) // deletes a post on the pool server
 
 	r.Run(":7000")
 }
