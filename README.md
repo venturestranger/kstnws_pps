@@ -20,7 +20,7 @@ HTTP Response Consists of:
 Methods:
 1. GET - read (returns status code and response body)
 2. POST - create (requires request body, returns status code)
-3. PUT - update | push to API (returns status code)
+3. PUT - update a post | push to API (returns status code)
 4. DELETE - delete (returns status code)
 
 Status Codes:
@@ -35,6 +35,7 @@ Status Codes:
 
 ```
 - /validate/auth [GET] | returns a token if valid key 
+* /validate/push [PUT] | updates a post on PPS
 * /validate [GET] | returns posts from PPS 
 * /validate [POST] | creates a post on PPS
 * /validate [PUT] | pushes a post from PPS to API
@@ -67,6 +68,16 @@ Description:
 ```
 
 ```
+/validate [PUT]
+
+Description:
+1. It updates the post on the pool server
+
+* fields: 
+1. id
+```
+
+```
 /validate [POST]
 
 Description:
@@ -89,7 +100,7 @@ Description:
 ```
 
 ```
-/validate [PUT]
+/validate/push [PUT]
 
 Description:
 1. It changes the status of a post. If verification is successful, it pushes a post to API and removes the local copy from PPS
