@@ -35,10 +35,10 @@ Status Codes:
 
 ```
 - /validate/auth [GET] | returns a token if valid key 
-* /validate/push [PUT] | updates a post on PPS
+* /validate/push [PUT] | pushes a post from PPS to API
 * /validate [GET] | returns posts from PPS 
 * /validate [POST] | creates a post on PPS
-* /validate [PUT] | pushes a post from PPS to API
+* /validate [PUT] | updates a post on PPS 
 * /validate [DELETE] | removes a post from PPS
 ```
 

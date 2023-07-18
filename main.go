@@ -60,7 +60,7 @@ func main() {
 	r.Use(cors.New(config))
 
 	r.GET("/validate/auth", AuthHandler)
-	r.PUT("/validate/push", ISAUTH, AuthHandler) // validates the post and pushes it to the pool server
+	r.PUT("/validate/push", ISAUTH, PushHandler) // validates the post and pushes it to the pool server
 	r.GET("/validate", ISAUTH, GetHandler) // gets a list of posts
 	r.PUT("/validate", ISAUTH, PutHandler)  // updates a post on the pool server
 	r.POST("/validate", ISAUTH, PostHandler) // creates a post on the pool server
