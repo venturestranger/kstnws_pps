@@ -4,8 +4,8 @@ const (
 	issuer string = "domain"
 	ppsKey string = "domain"
 	apiKey string = "domain"
-	apiToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIzLTA0LTE5VDE5OjExOjM5LjgwNzU4MjIrMDY6MDAiLCJpYXQiOjE2ODE5MDYyOTksImlzcyI6ImRvbWFpbiJ9.N2bzXJW0r-obDXX30UP1lAbm9ULn-inXvDObQcGboB0"
-	apiAddr string = "http://tvoykostanay.kz/api"
+	apiToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIzLTA3LTE4VDA5OjIxOjI1Ljc4ODQ1NTAzNFoiLCJpYXQiOjE2ODk2Njg0ODUsImlzcyI6ImRvbWFpbiJ9.lDnKz4t_6ApwhNxGAnxf0zBy43ztNFfGhCQj1cpNcKw"
+	apiAddr string = "https://tvoykostanay.kz/api"
 )
 
 const (

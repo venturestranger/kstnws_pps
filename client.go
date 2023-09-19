@@ -8,6 +8,7 @@ import (
 	"strings"
 	"bytes"
 	"io"
+	"fmt"
 )
 
 type Category struct {
@@ -72,7 +73,7 @@ func FetchHashtagsFromAPI(hashtagsOneline string) []int {
 	for _, hashtag := range(hashtags) {
 		for {
 			resp := makeRequest(&client, "GET", apiAddr + "/rest/hashtags?name=" + hashtag, nil)
-
+			// fmt.Printf("resp - %s", resp)
 			bodyByte, _ := ioutil.ReadAll(resp.Body)
 			var instance []Hashtag
 			json.Unmarshal(bodyByte, &instance)
@@ -80,6 +81,7 @@ func FetchHashtagsFromAPI(hashtagsOneline string) []int {
 			if len(instance) < 1 {
 				payload, _ := json.Marshal(Hashtag{0, hashtag, 0})
 				resp = makeRequest(&client, "POST", apiAddr + "/rest/hashtags", bytes.NewReader(payload))
+				fmt.Printf("resp - %s \n", resp)
 			} else {
 				ret = append(ret, instance[0].Id)
 				break
@@ -94,8 +96,9 @@ func PostPushToAPI(post Post) {
 	Log("Pushing PPS-API:", post.Title, "- Author:", post.IdAuthor)
 
 	categoryId := FetchCategoryFromAPI(post.Category)
+//	fmt.Printf("categoryId - %s \n", categoryId)
 	hashtagIds := FetchHashtagsFromAPI(post.Hashtags)
-
+//	fmt.Printf("HashtagId - %s \n", hashtagIds)
 	client := http.Client{}
 
 	for {
